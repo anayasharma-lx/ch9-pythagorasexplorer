@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Right Triangle Explorer — Ganita Prakash Grade 8</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f4f0;--surface:#ffffff;--surface2:#f0ede8;--border:#d8d4cc;
+  --text:#1a1814;--text2:#5a5650;--text3:#9a958e;
+  --accent:#c0392b;--blue:#2c7be5;--green:#1a7a4a;
+  --font:'DM Sans',-apple-system,sans-serif;--mono:'DM Mono',ui-monospace,monospace;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;line-height:1.5}
+.page{max-width:920px;margin:0 auto;padding:32px 24px}
+.lbl{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
+.title{font-size:22px;font-weight:700;margin-bottom:6px}
+.subtitle{font-size:14px;color:var(--text2);margin-bottom:24px;max-width:580px;line-height:1.55}
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px}
+
+/* Input row */
+.input-section{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.inp-group{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:13px 14px}
+.inp-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.inp-label.a{color:var(--blue)}
+.inp-label.b{color:var(--green)}
+.inp-label.c{color:var(--accent)}
+.inp-group input{width:100%;padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;font-family:var(--mono);font-size:18px;font-weight:700;background:var(--surface);color:var(--text);outline:none;text-align:center}
+.inp-group input:focus{border-color:var(--blue)}
+.inp-group input:read-only{background:var(--surface2);color:var(--text2);border-color:transparent;cursor:default}
+.inp-group .sub{font-size:11px;color:var(--text3);margin-top:4px;text-align:center}
+
+/* Mode selector */
+.mode-row{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+.mode-btn{padding:7px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:12.5px;font-weight:500;color:var(--text2);background:var(--surface);cursor:pointer;font-family:var(--font);transition:all .12s}
+.mode-btn.active{background:var(--text);color:#fff;border-color:var(--text)}
+
+/* Canvas */
+canvas{display:block;width:100%;border-radius:8px;border:1.5px solid var(--border);background:#fafaf8}
+
+/* Working */
+.working{background:#fff8f0;border:1.5px solid #f0d8c0;border-radius:10px;padding:14px 18px;font-size:13.5px;color:#6b4400;line-height:1.7;margin-top:16px}
+.working .eq{font-family:var(--mono);display:block;font-size:13px;margin:2px 0}
+.working strong{color:#a05000}
+
+/* Baudhāyana triples quick check */
+.triple-check{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;margin-top:14px;font-size:13.5px;color:var(--text2)}
+.triple-check strong{color:var(--text)}
+.triple-badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;margin-left:8px}
+.triple-badge.yes{background:#d0f5e8;color:#1a7a4a}
+.triple-badge.no{background:#ffe0e0;color:#c0392b}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="lbl">Chapter 2 · The Baudhāyana-Pythagoras Theorem</div>
+  <div class="title">Right Triangle Explorer</div>
+  <div class="subtitle">If a right triangle has shorter sides of length a and b, then the hypotenuse c satisfies a² + b² = c². Enter any two sides and the third is calculated. The squares on each side are drawn.</div>
+
+  <div class="card">
+    <div class="mode-row" id="modeRow">
+      <button class="mode-btn active" data-m="0">Find c (hypotenuse)</button>
+      <button class="mode-btn" data-m="1">Find b (given a and c)</button>
+      <button class="mode-btn" data-m="2">Find a (given b and c)</button>
+    </div>
+
+    <div class="input-section" id="inputSection">
+      <div class="inp-group">
+        <div class="inp-label a">Side a</div>
+        <input type="number" id="inpA" min="0.1" step="0.5" value="3" placeholder="a">
+        <div class="sub">shorter side</div>
+      </div>
+      <div class="inp-group">
+        <div class="inp-label b">Side b</div>
+        <input type="number" id="inpB" min="0.1" step="0.5" value="4" placeholder="b">
+        <div class="sub">shorter side</div>
+      </div>
+      <div class="inp-group">
+        <div class="inp-label c">Hypotenuse c</div>
+        <input type="number" id="inpC" min="0.1" step="0.5" placeholder="c" readonly>
+        <div class="sub">longest side</div>
+      </div>
+    </div>
+
+    <canvas id="cvs" height="400"></canvas>
+
+    <div class="working" id="working"></div>
+    <div class="triple-check" id="tripleCheck"></div>
+  </div>
+</div>
+
+<script>
+let mode = 0; // 0=find c, 1=find b, 2=find a
+
+function getVals() {
+  const a = parseFloat(document.getElementById('inpA').value);
+  const b = parseFloat(document.getElementById('inpB').value);
+  const c = parseFloat(document.getElementById('inpC').value);
+  return { a, b, c };
+}
+
+function compute() {
+  let { a, b, c } = getVals();
+  if (mode === 0) { if (a > 0 && b > 0) { c = Math.sqrt(a*a+b*b); document.getElementById('inpC').value = parseFloat(c.toFixed(4)); } }
+  else if (mode === 1) { if (a > 0 && c > a) { b = Math.sqrt(c*c-a*a); document.getElementById('inpB').value = parseFloat(b.toFixed(4)); } }
+  else { if (b > 0 && c > b) { a = Math.sqrt(c*c-b*b); document.getElementById('inpA').value = parseFloat(a.toFixed(4)); } }
+  const v = getVals();
+  drawDiagram(v.a, v.b, v.c);
+  updateWorking(v.a, v.b, v.c);
+  checkTriple(v.a, v.b, v.c);
+}
+
+function drawDiagram(a, b, c) {
+  const cvs = document.getElementById('cvs');
+  const PR = window.devicePixelRatio || 1;
+  const W = cvs.parentElement.clientWidth;
+  const H = 400;
+  cvs.width = W * PR; cvs.height = H * PR;
+  cvs.style.width = W + 'px'; cvs.style.height = H + 'px';
+  const ctx = cvs.getContext('2d');
+  ctx.scale(PR, PR);
+  ctx.fillStyle = '#fafaf8'; ctx.fillRect(0, 0, W, H);
+
+  if (!a || !b || !c || isNaN(c)) return;
+
+  // Scale to fit: triangle + three squares
+  const maxSide = Math.max(a, b, c);
+  const totalSpan = a + b + c;
+  const scale = Math.min((W - 40) / (a + c + 10), (H - 40) / (b + c + 10));
+
+  const sa = a * scale, sb = b * scale, sc = c * scale;
+
+  // Place right angle at bottom-left corner of the canvas
+  const ox = 20 + sc, oy = H - 20 - sc;
+
+  // Triangle vertices (right angle at O)
+  const O = { x: ox, y: oy };
+  const A = { x: ox + sa, y: oy };       // along x (side a)
+  const B = { x: ox, y: oy - sb };       // along y (side b)
+
+  // Draw square on side a (below triangle)
+  fillSquare(ctx, O, A, { x: ox + sa, y: oy + sa }, { x: ox, y: oy + sa },
+    'rgba(44,95,158,.15)', '#2c7be5');
+
+  // Draw square on side b (left of triangle)
+  fillSquare(ctx, O, B, { x: ox - sb, y: oy - sb }, { x: ox - sb, y: oy },
+    'rgba(26,122,74,.15)', '#1a7a4a');
+
+  // Hypotenuse square (rotated) — vertices go around
+  // Hypotenuse from A to B. Perpendicular outward.
+  const dx = B.x - A.x, dy = B.y - A.y;
+  const perp = { x: -dy, y: dx }; // 90° CCW = outward from triangle
+  const C2 = { x: A.x + perp.x, y: A.y + perp.y };
+  const D2 = { x: B.x + perp.x, y: B.y + perp.y };
+  fillSquare(ctx, A, B, D2, C2, 'rgba(192,57,43,.13)', '#c0392b');
+
+  // Triangle fill
+  ctx.beginPath(); ctx.moveTo(O.x,O.y); ctx.lineTo(A.x,A.y); ctx.lineTo(B.x,B.y); ctx.closePath();
+  ctx.fillStyle = 'rgba(100,100,100,.1)'; ctx.fill();
+  ctx.strokeStyle = '#1a1814'; ctx.lineWidth = 2.5; ctx.stroke();
+
+  // Right angle mark
+  const rm = 12;
+  ctx.beginPath(); ctx.strokeStyle='#1a1814'; ctx.lineWidth=1.5;
+  ctx.moveTo(O.x+rm, O.y); ctx.lineTo(O.x+rm,O.y-rm); ctx.lineTo(O.x,O.y-rm); ctx.stroke();
+
+  // Labels
+  const lf = scale > 20 ? 14 : 11;
+  ctx.font = `bold ${lf}px DM Mono, monospace`; ctx.textAlign='center';
+
+  // a label (below side a)
+  ctx.fillStyle='#2c7be5';
+  ctx.fillText(`a = ${fmtN(a)}`, ox + sa/2, oy + 18);
+  ctx.fillText(`a² = ${fmtN(a*a)}`, ox + sa/2, oy + sa/2 + 4);
+
+  // b label (left of side b)
+  ctx.fillStyle='#1a7a4a';
+  ctx.save(); ctx.translate(ox - 18, oy - sb/2); ctx.rotate(-Math.PI/2);
+  ctx.fillText(`b = ${fmtN(b)}`, 0, 0); ctx.restore();
+  ctx.fillText(`b² = ${fmtN(b*b)}`, ox - sb/2, oy - sb/2 + 4);
+
+  // c label (on hypotenuse)
+  ctx.fillStyle='#c0392b';
+  const hm = { x: (A.x+B.x)/2, y: (A.y+B.y)/2 };
+  ctx.fillText(`c = ${fmtN(c)}`, hm.x + 14, hm.y - 8);
+  const cm = { x: (A.x+B.x+C2.x+D2.x)/4, y: (A.y+B.y+C2.y+D2.y)/4 };
+  ctx.fillText(`c² = ${fmtN(c*c)}`, cm.x, cm.y);
+}
+
+function fillSquare(ctx, p1, p2, p3, p4, fill, stroke) {
+  ctx.beginPath();
+  ctx.moveTo(p1.x,p1.y); ctx.lineTo(p2.x,p2.y);
+  ctx.lineTo(p3.x,p3.y); ctx.lineTo(p4.x,p4.y);
+  ctx.closePath();
+  ctx.fillStyle=fill; ctx.fill();
+  ctx.strokeStyle=stroke; ctx.lineWidth=1.5; ctx.stroke();
+}
+
+function fmtN(n) {
+  if (n === Math.round(n)) return n.toString();
+  return (Math.round(n * 1000) / 1000).toString();
+}
+
+function updateWorking(a, b, c) {
+  if (!a||!b||!c||isNaN(c)) { document.getElementById('working').innerHTML='Enter two sides.'; return; }
+  const w = document.getElementById('working');
+  if (mode===0) {
+    w.innerHTML=`<strong>Finding hypotenuse c:</strong>
+      <span class="eq">a² + b² = c²</span>
+      <span class="eq">${fmtN(a)}² + ${fmtN(b)}² = c²</span>
+      <span class="eq">${fmtN(a*a)} + ${fmtN(b*b)} = c²</span>
+      <span class="eq">c² = ${fmtN(a*a+b*b)}</span>
+      <span class="eq">c = √${fmtN(a*a+b*b)} = <strong>${fmtN(c)}</strong></span>`;
+  } else if (mode===1) {
+    w.innerHTML=`<strong>Finding side b:</strong>
+      <span class="eq">a² + b² = c²</span>
+      <span class="eq">b² = c² − a² = ${fmtN(c*c)} − ${fmtN(a*a)} = ${fmtN(c*c-a*a)}</span>
+      <span class="eq">b = √${fmtN(c*c-a*a)} = <strong>${fmtN(b)}</strong></span>`;
+  } else {
+    w.innerHTML=`<strong>Finding side a:</strong>
+      <span class="eq">a² + b² = c²</span>
+      <span class="eq">a² = c² − b² = ${fmtN(c*c)} − ${fmtN(b*b)} = ${fmtN(c*c-b*b)}</span>
+      <span class="eq">a = √${fmtN(c*c-b*b)} = <strong>${fmtN(a)}</strong></span>`;
+  }
+}
+
+function checkTriple(a, b, c) {
+  const el = document.getElementById('tripleCheck');
+  if (!a||!b||!c||isNaN(c)) { el.innerHTML=''; return; }
+  const ai=Math.round(a), bi=Math.round(b), ci=Math.round(c);
+  const isInt = Math.abs(a-ai)<0.001 && Math.abs(b-bi)<0.001 && Math.abs(c-ci)<0.001;
+  if (isInt && ai*ai+bi*bi===ci*ci) {
+    const g = gcd(gcd(ai,bi),ci);
+    const prim = g===1;
+    el.innerHTML=`<strong>Baudhāyana triple!</strong><span class="triple-badge yes">${prim?'Primitive':'Scaled'}</span> (${ai}, ${bi}, ${ci}) satisfies a²+b²=c². ${prim?'This is a primitive triple — no common factor.':'Dividing by '+g+' gives the primitive triple ('+ai/g+', '+bi/g+', '+ci/g+').'}`;
+  } else if (isInt) {
+    el.innerHTML=`<strong>(${ai}, ${bi}, ${ci})</strong><span class="triple-badge no">Not a triple</span> — all three are integers but ${ai}²+${bi}²=${ai*ai+bi*bi} ≠ ${ci}².`;
+  } else {
+    el.innerHTML=`The sides are not all integers, so this is not a Baudhāyana triple.`;
+  }
+}
+
+function gcd(a,b){ return b===0?a:gcd(b,a%b); }
+
+// Set up inputs based on mode
+function applyMode() {
+  const aInp=document.getElementById('inpA');
+  const bInp=document.getElementById('inpB');
+  const cInp=document.getElementById('inpC');
+  if(mode===0){ aInp.readOnly=false; bInp.readOnly=false; cInp.readOnly=true; }
+  else if(mode===1){ aInp.readOnly=false; bInp.readOnly=true; cInp.readOnly=false; }
+  else { aInp.readOnly=true; bInp.readOnly=false; cInp.readOnly=false; }
+  // Defaults
+  if(mode===0){aInp.value=3;bInp.value=4;cInp.value='';}
+  else if(mode===1){aInp.value=8;bInp.value='';cInp.value=17;}
+  else {aInp.value='';bInp.value=12;cInp.value=13;}
+  compute();
+}
+
+document.querySelectorAll('.mode-btn').forEach(btn=>{
+  btn.onclick=()=>{
+    mode=parseInt(btn.dataset.m);
+    document.querySelectorAll('.mode-btn').forEach(b=>b.classList.toggle('active',b===btn));
+    applyMode();
+  };
+});
+['inpA','inpB','inpC'].forEach(id=>{ document.getElementById(id).oninput=compute; });
+
+window.addEventListener('resize', ()=>{ const v=getVals(); drawDiagram(v.a,v.b,v.c); });
+applyMode();
+</script>
+</body>
+</html>
