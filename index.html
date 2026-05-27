@@ -3,411 +3,558 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Right Triangle Explorer — Ch. 9</title>
+<title>Baudhāyana's Construction — Ch. 9</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@400;500;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Mono:wght@400;500;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#f4f2ec;--paper:#fff;--sand:#e8e4db;--ink:#1a1714;--rule:#ccc8be;
-  --blue:#1650a8;--blue-lt:#deeafa;--blue-bg:#eef3fc;
-  --green:#1a6e42;--green-lt:#d5eed9;--green-bg:#eaf5ec;
-  --red:#b83020;--red-lt:#f5d0cb;--red-bg:#fdf0ee;
-  --gold:#b87010;
-  --display:'Archivo Black',Impact,sans-serif;
+  --bg:#0f0d0b;--surface:#181512;--surface2:#201d18;
+  --chalk:#f0ece3;--chalk2:#b8b2a7;--chalk3:#716b62;--rule:#2a2520;
+  --blue:#6ba3d6;--blue-d:#3a78b0;
+  --red:#e07060;--red-d:#b84030;
+  --green:#5dbf8a;--green-d:#2e8a58;
+  --amber:#e8a840;
+  --display:'Playfair Display',Georgia,serif;
   --mono:'DM Mono',monospace;--body:'DM Sans',sans-serif;
 }
-html{background:var(--bg)}
-body{font-family:var(--body);background:var(--bg);color:var(--ink);min-height:100vh;
-  -webkit-font-smoothing:antialiased;padding:0}
+html,body{background:var(--bg);color:var(--chalk)}
+body{font-family:var(--body);min-height:100vh;-webkit-font-smoothing:antialiased;padding:0}
 
-/* HERO */
-.hero{padding:20px 28px 16px;border-bottom:2.5px solid var(--ink);
-  display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px}
-.hero-tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--ink);opacity:.4;margin-bottom:5px}
-.hero-title{font-family:var(--display);font-size:clamp(24px,6vw,52px);line-height:.92;color:var(--ink)}
-.hero-sub{font-size:14px;color:var(--ink);opacity:.55;max-width:340px;line-height:1.55;align-self:flex-end}
+/* HEADER */
+.header{padding:22px 28px 18px;border-bottom:1px solid var(--rule)}
+.chap-tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--chalk3);margin-bottom:8px}
+.main-title{font-family:var(--display);font-size:clamp(26px,6vw,54px);font-weight:900;
+  line-height:.95;color:var(--chalk)}
+.main-title em{font-style:italic;color:var(--amber)}
+.subtitle{font-family:var(--mono);font-size:12px;color:var(--chalk3);margin-top:10px;
+  line-height:1.65;max-width:500px}
 
-/* MODE TABS */
-.mode-bar{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:2px solid var(--ink)}
-.mode-btn{padding:11px 0;border:none;background:transparent;
+/* AB CONTROLS */
+.ab-controls{padding:16px 28px;background:var(--surface);border-bottom:1px solid var(--rule);
+  display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:480px){.ab-controls{grid-template-columns:1fr;gap:10px}}
+.ctrl-block .ctrl-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.ctrl-lbl{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--chalk3)}
+.ctrl-val{font-family:var(--display);font-size:30px;letter-spacing:.02em;line-height:1}
+.ctrl-val.blue{color:var(--blue)}
+.ctrl-val.red{color:var(--red)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:3px;
+  background:var(--rule);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+  width:20px;height:20px;border-radius:50%;background:var(--chalk);
+  border:3px solid var(--bg);box-shadow:0 0 0 1.5px var(--chalk3);cursor:pointer}
+input[type=range].blue-r::-webkit-slider-thumb{background:var(--blue)}
+input[type=range].red-r::-webkit-slider-thumb{background:var(--red)}
+
+/* STEP NAV */
+.step-nav{padding:14px 28px;background:var(--surface2);border-bottom:1px solid var(--rule);
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.nav-btn{padding:8px 18px;border:1px solid var(--chalk3);background:transparent;
   font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.06em;
-  text-transform:uppercase;color:var(--ink);opacity:.35;cursor:pointer;
-  border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;text-align:center;line-height:1.3}
-.mode-btn.active{opacity:1;border-bottom-color:var(--ink)}
+  text-transform:uppercase;color:var(--chalk3);cursor:pointer;transition:all .15s}
+.nav-btn:hover:not(:disabled){border-color:var(--chalk);color:var(--chalk)}
+.nav-btn:disabled{opacity:.25;cursor:not-allowed}
+.nav-btn.primary{background:var(--chalk);color:var(--bg);border-color:var(--chalk)}
+.nav-btn.primary:hover:not(:disabled){opacity:.85}
+.step-dots{display:flex;gap:5px;align-items:center;flex:1;justify-content:center}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--chalk3);transition:all .2s}
+.dot.active{background:var(--amber);width:22px;border-radius:4px}
+.dot.done{background:var(--chalk3);opacity:.6}
+.reset-btn{margin-left:auto;padding:6px 14px;border:1px solid var(--rule);background:transparent;
+  font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--chalk3);cursor:pointer;transition:all .12s}
+.reset-btn:hover{border-color:var(--chalk3);color:var(--chalk)}
 
-/* INPUTS STRIP */
-.inputs-strip{padding:18px 28px;background:var(--paper);border-bottom:1px solid var(--rule);
-  display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
-@media(max-width:500px){.inputs-strip{grid-template-columns:1fr;gap:8px}}
-.inp-block{display:flex;flex-direction:column;gap:5px}
-.inp-lbl{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;
-  text-transform:uppercase}
-.inp-lbl.blue{color:var(--blue)}
-.inp-lbl.green{color:var(--green)}
-.inp-lbl.red{color:var(--red)}
-.inp-num{font-family:var(--display);font-size:clamp(28px,5vw,44px);line-height:1;
-  padding:8px 12px;border:2px solid var(--rule);background:var(--bg);
-  color:var(--ink);outline:none;width:100%;text-align:center;
-  -moz-appearance:textfield;transition:border .15s}
-.inp-num:focus{border-color:var(--ink)}
-.inp-num::-webkit-inner-spin-button,.inp-num::-webkit-outer-spin-button{-webkit-appearance:none}
-.inp-num[readonly]{background:var(--sand);color:var(--ink);opacity:.7;cursor:default;border-style:dashed}
-.inp-num.computed{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.inp-sub{font-family:var(--mono);font-size:10px;color:var(--ink);opacity:.4;
-  text-align:center;text-transform:uppercase;letter-spacing:.06em}
+/* STEP BANNER */
+.step-banner{padding:16px 28px;border-bottom:1px solid var(--rule)}
+.sb-num{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--amber);margin-bottom:6px}
+.sb-text{font-size:14px;line-height:1.7;color:var(--chalk2)}
+.sb-text strong{color:var(--chalk)}
+.sb-text em{font-style:italic;color:var(--amber)}
 
-/* CANVAS SECTION */
-.canvas-section{padding:0;background:var(--sand);border-bottom:1px solid var(--rule)}
+/* CANVAS */
+.canvas-wrap{background:var(--surface);border-bottom:1px solid var(--rule)}
 canvas{display:block;width:100%}
 
-/* EQUATION BAND */
-.eq-band{padding:16px 28px;background:var(--ink);
-  font-family:var(--display);font-size:clamp(18px,4vw,32px);
-  letter-spacing:.04em;color:var(--bg);text-align:center;
-  border-bottom:1px solid var(--rule)}
-.eq-band .eq-a{color:#7aa8e8}
-.eq-band .eq-b{color:#6ec891}
-.eq-band .eq-c{color:#e87a6a}
-.eq-band .eq-op{color:rgba(255,255,255,.4);margin:0 8px}
+/* AREAS BAND */
+.areas-band{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--rule)}
+.area-cell{padding:16px 20px;border-right:1px solid var(--rule);
+  display:flex;flex-direction:column;gap:3px;transition:opacity .3s}
+.area-cell:last-child{border-right:none}
+.ac-lbl{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase}
+.ac-lbl.blue{color:var(--blue)}
+.ac-lbl.red{color:var(--red)}
+.ac-lbl.green{color:var(--green)}
+.ac-big{font-family:var(--display);font-size:clamp(24px,4vw,38px);line-height:1}
+.ac-big.blue{color:var(--blue)}
+.ac-big.red{color:var(--red)}
+.ac-big.green{color:var(--green)}
+.ac-sub{font-family:var(--mono);font-size:11px;color:var(--chalk3)}
+@media(max-width:480px){.areas-band{grid-template-columns:1fr}
+  .area-cell{border-right:none;border-bottom:1px solid var(--rule)}
+  .area-cell:last-child{border-bottom:none}}
 
-/* WORKING */
-.working-section{padding:18px 28px;border-bottom:1px solid var(--rule)}
-.wk-head{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.12em;
-  text-transform:uppercase;color:var(--ink);opacity:.4;margin-bottom:10px}
-.wk-steps{display:flex;flex-direction:column;gap:4px}
-.wk-line{font-family:var(--mono);font-size:13px;color:var(--ink);line-height:1.6}
-.wk-line.result{font-family:var(--display);font-size:20px;color:var(--ink)}
-.wk-line .hl-blue{color:var(--blue);font-weight:600}
-.wk-line .hl-green{color:var(--green);font-weight:600}
-.wk-line .hl-red{color:var(--red);font-weight:600}
+/* PROOF EQ */
+.proof-eq{padding:18px 28px;background:var(--surface2);border-bottom:1px solid var(--rule);
+  font-family:var(--display);font-size:clamp(16px,3.5vw,26px);
+  color:var(--chalk);text-align:center;letter-spacing:.04em;transition:opacity .3s}
+.proof-eq .blue{color:var(--blue)}
+.proof-eq .red{color:var(--red)}
+.proof-eq .green{color:var(--green)}
+.proof-eq .amber{color:var(--amber)}
+.proof-eq .op{color:var(--chalk3);margin:0 6px}
 
-/* TRIPLE BAND */
-.triple-band{padding:16px 28px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.triple-badge{font-family:var(--display);font-size:20px;letter-spacing:.04em;
-  padding:8px 16px;border:2.5px solid currentColor;white-space:nowrap}
-.triple-badge.yes{color:var(--green)}
-.triple-badge.no{color:var(--rule)}
-.triple-badge.almost{color:var(--gold)}
-.triple-detail{font-family:var(--mono);font-size:12px;line-height:1.65;color:var(--ink);opacity:.6}
-
-/* KNOWN TRIPLES STRIP */
-.triples-strip{padding:14px 28px;border-top:1px solid var(--rule);background:var(--paper);
-  display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.ts-label{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--ink);opacity:.4;margin-right:4px}
-.ts-btn{padding:5px 12px;border:1.5px solid var(--rule);background:transparent;
-  font-family:var(--mono);font-size:11px;font-weight:600;color:var(--ink);opacity:.6;
-  cursor:pointer;transition:all .12s}
-.ts-btn:hover{border-color:var(--ink);opacity:1}
-.ts-btn.active{background:var(--ink);color:var(--bg);border-color:var(--ink);opacity:1}
+/* INSIGHT */
+.insight-row{padding:18px 28px;display:grid;grid-template-columns:3px 1fr;gap:14px}
+.ins-bar{background:var(--amber)}
+.ins-text{font-size:13px;line-height:1.8;color:var(--chalk2)}
+.ins-text strong{color:var(--chalk)}
 </style>
 </head>
 <body>
 
-<div class="hero">
-  <div>
-    <div class="hero-tag">Ch. 9 · Baudhāyana–Pythagoras Theorem</div>
-    <div class="hero-title">Right Triangle<br>Explorer</div>
-  </div>
-  <div class="hero-sub">Enter any two sides. The squares on every side are drawn to scale — their areas are the proof.</div>
+<div class="header">
+  <div class="chap-tag">Ch. 9 · Baudhāyana–Pythagoras Theorem</div>
+  <div class="main-title">Baudhāyana's<br><em>Construction</em></div>
+  <div class="subtitle">How do you make one square whose area equals the sum of two? Baudhāyana solved this around 800 BCE. Step through his proof.</div>
 </div>
 
-<div class="mode-bar">
-  <button class="mode-btn active" data-m="0">Find c<br>(hypotenuse)</button>
-  <button class="mode-btn" data-m="1">Find b<br>(given a, c)</button>
-  <button class="mode-btn" data-m="2">Find a<br>(given b, c)</button>
-</div>
-
-<div class="inputs-strip">
-  <div class="inp-block">
-    <div class="inp-lbl blue">Side a</div>
-    <input class="inp-num" type="number" id="inp-a" value="3" min="0.1" step="0.5">
-    <div class="inp-sub">shorter leg</div>
+<div class="ab-controls">
+  <div class="ctrl-block">
+    <div class="ctrl-head">
+      <span class="ctrl-lbl">a — smaller side</span>
+      <span class="ctrl-val blue" id="a-disp">3</span>
+    </div>
+    <input type="range" class="blue-r" id="a-sl" min="1" max="6" step="0.5" value="3">
   </div>
-  <div class="inp-block">
-    <div class="inp-lbl green">Side b</div>
-    <input class="inp-num" type="number" id="inp-b" value="4" min="0.1" step="0.5">
-    <div class="inp-sub">shorter leg</div>
-  </div>
-  <div class="inp-block">
-    <div class="inp-lbl red">Hypotenuse c</div>
-    <input class="inp-num computed" type="number" id="inp-c" placeholder="—" readonly>
-    <div class="inp-sub">longest side</div>
+  <div class="ctrl-block">
+    <div class="ctrl-head">
+      <span class="ctrl-lbl">b — larger side</span>
+      <span class="ctrl-val red" id="b-disp">4</span>
+    </div>
+    <input type="range" class="red-r" id="b-sl" min="2" max="9" step="0.5" value="4">
   </div>
 </div>
 
-<div class="canvas-section">
+<div class="step-nav">
+  <button class="nav-btn" id="prev-btn" disabled>← Prev</button>
+  <div class="step-dots" id="step-dots"></div>
+  <button class="nav-btn primary" id="next-btn">Next →</button>
+  <button class="reset-btn" id="reset-btn">Reset</button>
+</div>
+
+<div class="step-banner">
+  <div class="sb-num" id="sb-num"></div>
+  <div class="sb-text" id="sb-text"></div>
+</div>
+
+<div class="canvas-wrap">
   <canvas id="cvs"></canvas>
 </div>
 
-<div class="eq-band" id="eq-band"></div>
+<div class="areas-band" id="areas-band"></div>
 
-<div class="working-section">
-  <div class="wk-head">Step-by-step working</div>
-  <div class="wk-steps" id="working"></div>
-</div>
+<div class="proof-eq" id="proof-eq"></div>
 
-<div class="triple-band" id="triple-band"></div>
-
-<div class="triples-strip">
-  <span class="ts-label">Known triples</span>
-  <button class="ts-btn active" data-a="3" data-b="4" data-c="5">3, 4, 5</button>
-  <button class="ts-btn" data-a="5" data-b="12" data-c="13">5, 12, 13</button>
-  <button class="ts-btn" data-a="8" data-b="15" data-c="17">8, 15, 17</button>
-  <button class="ts-btn" data-a="7" data-b="24" data-c="25">7, 24, 25</button>
-  <button class="ts-btn" data-a="6" data-b="8" data-c="10">6, 8, 10</button>
-  <button class="ts-btn" data-a="9" data-b="12" data-c="15">9, 12, 15</button>
-  <button class="ts-btn" data-a="5" data-b="7" data-c="">5, 7, ?</button>
-</div>
+<div class="insight-row" id="insight-row"></div>
 
 <script>
-let mode=0;
-const BLUE='#1650a8',GREEN='#1a6e42',RED='#b83020';
-const BLUE_LT='rgba(22,80,168,.16)',GREEN_LT='rgba(26,110,66,.16)',RED_LT='rgba(184,48,32,.16)';
+let step=1, a=3, b=4;
+const MAX=5;
+const BLUE='#6ba3d6', RED='#e07060', GREEN='#5dbf8a', AMBER='#e8a840';
+const BLUE_F='rgba(107,163,214,.22)', RED_F='rgba(224,112,96,.18)', GREEN_F='rgba(93,191,138,.2)';
+const CHALK='#f0ece3', CHALK2='#b8b2a7', CHALK3='#716b62';
 
-function getVals(){
-  return {
-    a:parseFloat(document.getElementById('inp-a').value)||0,
-    b:parseFloat(document.getElementById('inp-b').value)||0,
-    c:parseFloat(document.getElementById('inp-c').value)||0
-  };
-}
+const STEPS=[
+  {num:'Step 1 of 5',
+   text:'<strong>Two squares.</strong> A blue square of side <em>a</em> and a red square of side <em>b</em> (b > a). Their areas are a² and b². Goal: construct a single square whose area equals a² + b².'},
+  {num:'Step 2 of 5',
+   text:'<strong>Mark a rectangle inside the larger square.</strong> On the left edge of the red square, mark a width of <em>a</em>. The shaded strip is a rectangle with sides <em>a</em> (width) and <em>b</em> (height).'},
+  {num:'Step 3 of 5',
+   text:'<strong>Draw the diagonal of that rectangle.</strong> The diagonal connects the bottom-left corner to the top-right corner of the a×b rectangle. By Baudhāyana\'s rule, its length is <em>c = √(a² + b²)</em> — and <em>c</em> will be the side of our combined square.'},
+  {num:'Step 4 of 5',
+   text:'<strong>Four right triangles around a tilted square.</strong> Place four copies of the right triangle (legs a and b, hypotenuse c) inside an outer square of side (a + b). They fit perfectly, leaving a tilted inner square of side c in the centre.'},
+  {num:'Step 5 of 5',
+   text:'<strong>The proof by area.</strong> Outer square = (a+b)² = a² + 2ab + b². Four triangles = 4 × ½ab = 2ab. Inner square = outer − triangles = a² + 2ab + b² − 2ab = <strong>a² + b² = c².</strong> Any two squares can be combined this way.'},
+];
 
 function fmt(n){
-  if(!n||isNaN(n)) return '—';
-  return n===Math.round(n)?n.toString():(Math.round(n*1000)/1000).toString();
+  if(isNaN(n)||!isFinite(n)) return '?';
+  return n===Math.round(n)?n.toString():(Math.round(n*100)/100).toString();
 }
+function clamp(lo,hi,v){return Math.max(lo,Math.min(hi,v));}
 
-function compute(){
-  let {a,b,c}=getVals();
-  const cEl=document.getElementById('inp-c');
-  const bEl=document.getElementById('inp-b');
-  const aEl=document.getElementById('inp-a');
-
-  if(mode===0&&a>0&&b>0){
-    c=Math.sqrt(a*a+b*b);
-    cEl.value=parseFloat(c.toFixed(4));
-  } else if(mode===1&&a>0&&c>a){
-    b=Math.sqrt(c*c-a*a);
-    bEl.value=parseFloat(b.toFixed(4));
-  } else if(mode===2&&b>0&&c>b){
-    a=Math.sqrt(c*c-b*b);
-    aEl.value=parseFloat(a.toFixed(4));
+function renderDots(){
+  const cont=document.getElementById('step-dots');
+  cont.innerHTML='';
+  for(let i=1;i<=MAX;i++){
+    const d=document.createElement('div');
+    d.className='dot'+(i===step?' active':i<step?' done':'');
+    cont.appendChild(d);
   }
-
-  const v=getVals();
-  if(mode===0) v.c=c;
-  if(mode===1) v.b=b;
-  if(mode===2) v.a=a;
-
-  drawAll(v.a,v.b,v.c);
-  updateEq(v.a,v.b,v.c);
-  updateWorking(v.a,v.b,v.c);
-  updateTriple(v.a,v.b,v.c);
 }
 
-function drawAll(a,b,c){
+function updateBanner(){
+  const s=STEPS[step-1];
+  document.getElementById('sb-num').textContent=s.num;
+  document.getElementById('sb-text').innerHTML=s.text;
+}
+
+function updateAreas(){
+  const c=Math.sqrt(a*a+b*b);
+  const show4=step>=4;
+  document.getElementById('areas-band').innerHTML=`
+    <div class="area-cell" style="opacity:1">
+      <div class="ac-lbl blue">a² (blue)</div>
+      <div class="ac-big blue">${fmt(a*a)}</div>
+      <div class="ac-sub">${a}² = ${fmt(a*a)}</div>
+    </div>
+    <div class="area-cell" style="opacity:1">
+      <div class="ac-lbl red">b² (red)</div>
+      <div class="ac-big red">${fmt(b*b)}</div>
+      <div class="ac-sub">${b}² = ${fmt(b*b)}</div>
+    </div>
+    <div class="area-cell" style="opacity:${show4?1:.3}">
+      <div class="ac-lbl green">c² = a²+b²</div>
+      <div class="ac-big green">${show4?fmt(c*c):'—'}</div>
+      <div class="ac-sub">${show4?`${fmt(a*a)} + ${fmt(b*b)} = ${fmt(c*c)}`:''}</div>
+    </div>
+  `;
+}
+
+function updateProofEq(){
+  const c=Math.sqrt(a*a+b*b);
+  const el=document.getElementById('proof-eq');
+  if(step<4){
+    el.style.opacity='.3';
+    el.innerHTML=`<span class="blue">a²</span><span class="op">+</span><span class="red">b²</span><span class="op">=</span><span class="green">c²</span>`;
+    return;
+  }
+  el.style.opacity='1';
+  if(step===4){
+    el.innerHTML=`(a+b)² <span class="op">=</span> <span class="green">c²</span> <span class="op">+</span> 4 × ½ab`;
+  } else {
+    el.innerHTML=`<span class="blue">${fmt(a*a)}</span><span class="op">+</span><span class="red">${fmt(b*b)}</span><span class="op">=</span><span class="green">${fmt(c*c)}</span> <span style="color:var(--chalk3);font-size:.75em;margin-left:8px">= c²  ✓</span>`;
+  }
+}
+
+function updateInsight(){
+  const c=Math.sqrt(a*a+b*b);
+  const el=document.getElementById('insight-row');
+  const texts=[
+    `The two squares have areas <strong>${fmt(a*a)}</strong> and <strong>${fmt(b*b)}</strong>. Together they must equal ${fmt(a*a+b*b)} — the area of the combined square we want.`,
+    `The a×b rectangle has width ${a} and height ${b}. Its diagonal is the key length — longer than either side, shorter than their sum.`,
+    `By the distance formula: diagonal = √(${a}² + ${b}²) = √(${a*a}+${b*b}) = √${a*a+b*b} = <strong>${fmt(c)}</strong>. This will be the side of the combined square.`,
+    `The outer square has side (a+b) = ${a+b} and area ${(a+b)*(a+b)}. The four triangles together have area 4×½×${a}×${b} = ${2*a*b}. The inner square has area ${(a+b)*(a+b)} − ${2*a*b} = <strong>${(a+b)*(a+b)-2*a*b}</strong>.`,
+    `<strong>a² + b² = c²  always.</strong> Here: ${fmt(a*a)} + ${fmt(b*b)} = ${fmt(c*c)} = c². The proof works by area algebra — no measurement needed. Baudhāyana stated this in the <em>Śulbasūtra</em>, around 800 BCE, centuries before Pythagoras.`,
+  ];
+  el.innerHTML=`<div class="ins-bar"></div><p class="ins-text">${texts[step-1]}</p>`;
+}
+
+// ── DRAWING ──────────────────────────────────────────────────────────────────
+function draw(){
   const cvs=document.getElementById('cvs');
   const PR=Math.min(window.devicePixelRatio||1,2);
   const W=cvs.parentElement.clientWidth;
+  const c=Math.sqrt(a*a+b*b);
 
-  // Height: enough for triangle + squares on all sides
-  // The diagram needs room for: square on b (left), triangle (centre), square on a (below), hyp square (top-right)
-  // Rough height: b + c is the tallest span
-  const H=Math.round(Math.min(W*0.65,480));
+  let H;
+  if(step<=3) H=Math.round(Math.min(W*0.58,360));
+  else H=Math.round(Math.min(W*0.72,460));
+
   cvs.width=W*PR; cvs.height=H*PR;
   cvs.style.width=W+'px'; cvs.style.height=H+'px';
   const ctx=cvs.getContext('2d');
   ctx.scale(PR,PR);
-  ctx.fillStyle='#e8e4db'; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#181512'; ctx.fillRect(0,0,W,H);
 
-  if(!a||!b||!c||isNaN(c)||c<=0) return;
+  if(step<=3) drawSteps1to3(ctx,W,H,a,b,c);
+  else drawSteps4to5(ctx,W,H,a,b,c);
+}
 
-  // Scale: we need to fit b-square (width b) to left, a-square (height a) below,
-  // hyp square on hypotenuse. Total bounding box roughly (b+c) wide, (b+c) tall.
+function drawSteps1to3(ctx,W,H,a,b,c){
   const PAD=32;
+  // Two squares side by side, bottom-aligned
+  // Scale: b square height fits in ~70% of H, total width fits in ~70% W
   const scale=Math.min(
-    (W-PAD*2)/(b+c+4),
-    (H-PAD*2)/(b+c+4)
+    (H-PAD*2)*0.72/b,
+    (W-PAD*2)*0.68/(a+b)
   );
+  const sa=a*scale, sb=b*scale;
 
-  const sa=a*scale, sb=b*scale, sc=c*scale;
+  // Centre horizontally
+  const totalW=sa+sb+(step===1?sb*0.3:16);
+  const startX=(W-totalW)/2;
+  const baseY=H/2+sb*0.48;
 
-  // Right angle at O. Triangle: O bottom-left, A bottom-right (side a), B top-left (side b)
-  // Place O so b-square fits to the left and a-square fits below
-  const ox=PAD+sb+8, oy=H-PAD-sa-8;
-  const O={x:ox,y:oy};
-  const A={x:ox+sa,y:oy};    // right along x
-  const Bv={x:ox,y:oy-sb};   // up along y
+  const sqAx=startX;
+  const sqBx=startX+sa+(step===1?sb*0.3:16);
+  const topY=baseY-sb;
+  const botY=baseY;
+  const aTopY=baseY-sa;
 
-  // ── Square on a (blue) — below OA ──
-  const aP=[O,A,{x:A.x,y:A.y+sa},{x:O.x,y:O.y+sa}];
-  fillPoly(ctx,aP,BLUE_LT,BLUE,2);
-  // Area label inside
-  labelSquare(ctx,(ox+ox+sa)/2,oy+sa/2,`a² = ${fmt(a*a)}`,BLUE,scale*a*0.22);
+  // ── Blue square ──
+  ctx.fillStyle=BLUE_F; ctx.fillRect(sqAx,aTopY,sa,sa);
+  ctx.strokeStyle=BLUE; ctx.lineWidth=2.5; ctx.strokeRect(sqAx,aTopY,sa,sa);
+  ctx.fillStyle=BLUE;
+  ctx.font=`bold ${clamp(11,15,sa*0.15)}px DM Mono`;ctx.textAlign='center';
+  ctx.fillText(`a = ${a}`,sqAx+sa/2,aTopY-10);
+  ctx.font=`bold ${clamp(10,14,sa*0.13)}px DM Mono`;
+  ctx.fillText(`a² = ${fmt(a*a)}`,sqAx+sa/2,(aTopY+botY)/2+5);
 
-  // ── Square on b (green) — left of OB ──
-  const bP=[O,Bv,{x:Bv.x-sb,y:Bv.y},{x:O.x-sb,y:O.y}];
-  fillPoly(ctx,bP,GREEN_LT,GREEN,2);
-  labelSquare(ctx,ox-sb/2,oy-sb/2,`b² = ${fmt(b*b)}`,GREEN,scale*b*0.18);
+  // ── Red square ──
+  ctx.fillStyle=RED_F; ctx.fillRect(sqBx,topY,sb,sb);
+  ctx.strokeStyle=RED; ctx.lineWidth=2.5; ctx.strokeRect(sqBx,topY,sb,sb);
+  ctx.fillStyle=RED;
+  ctx.font=`bold ${clamp(11,16,sb*0.12)}px DM Mono`;ctx.textAlign='center';
+  ctx.fillText(`b = ${b}`,sqBx+sb/2,topY-10);
+  ctx.font=`bold ${clamp(10,14,sb*0.1)}px DM Mono`;
+  ctx.fillText(`b² = ${fmt(b*b)}`,sqBx+sb/2,(topY+botY)/2+5);
 
-  // ── Square on hypotenuse (red) — on the outer side of AB ──
-  const dx=Bv.x-A.x, dy=Bv.y-A.y;
-  // Perpendicular pointing outward (away from O): rotate dx,dy by -90°
-  const px2=dy, py2=-dx;  // outward normal (to the right of A→B)
-  const C2={x:A.x+px2,y:A.y+py2};
-  const D2={x:Bv.x+px2,y:Bv.y+py2};
-  const cP=[A,Bv,D2,C2];
-  fillPoly(ctx,cP,RED_LT,RED,2);
-  const cmx=(A.x+Bv.x+C2.x+D2.x)/4, cmy=(A.y+Bv.y+C2.y+D2.y)/4;
-  labelSquare(ctx,cmx,cmy,`c² = ${fmt(c*c)}`,RED,scale*c*0.14);
+  if(step<2) return;
 
-  // ── Triangle fill ──
-  fillPoly(ctx,[O,A,Bv],'rgba(255,255,255,.55)','#1a1714',2.5);
+  // ── Step 2: shade a×b rectangle inside red square ──
+  ctx.fillStyle='rgba(107,163,214,.28)';
+  ctx.fillRect(sqBx,topY,sa,sb);
 
-  // Right angle mark at O
-  const rm=Math.min(14,sa*0.18,sb*0.18);
-  ctx.beginPath();ctx.strokeStyle='#1a1714';ctx.lineWidth=1.5;
-  ctx.moveTo(ox+rm,oy);ctx.lineTo(ox+rm,oy-rm);ctx.lineTo(ox,oy-rm);ctx.stroke();
+  // Dashed divider line
+  ctx.strokeStyle=BLUE; ctx.lineWidth=1.5; ctx.setLineDash([5,4]);
+  ctx.beginPath(); ctx.moveTo(sqBx+sa,topY); ctx.lineTo(sqBx+sa,botY); ctx.stroke();
+  ctx.setLineDash([]);
 
-  // ── Side dimension labels ──
-  ctx.font=`600 ${clamp(11,15,scale*a*0.18)}px DM Mono`;
-  ctx.textAlign='center';ctx.fillStyle=BLUE;
-  ctx.fillText(`a = ${fmt(a)}`,ox+sa/2,oy+16);
+  // Dimension labels
+  ctx.fillStyle=BLUE; ctx.font=`bold ${clamp(10,13,sa*0.2)}px DM Mono`; ctx.textAlign='center';
+  ctx.fillText('a',sqBx+sa/2,botY+18);
+  ctx.fillStyle=RED;
+  if(b>a) ctx.fillText('b−a',sqBx+sa+(sb-sa)/2,botY+18);
 
-  ctx.font=`600 ${clamp(11,15,scale*b*0.18)}px DM Mono`;
-  ctx.save();ctx.translate(ox-16,oy-sb/2);ctx.rotate(-Math.PI/2);
-  ctx.fillStyle=GREEN;ctx.fillText(`b = ${fmt(b)}`,0,0);ctx.restore();
+  // Small brace lines
+  dashLine(ctx,sqBx,botY+8,sqBx+sa,botY+8,BLUE,1.5);
+  if(b>a) dashLine(ctx,sqBx+sa,botY+8,sqBx+sb,botY+8,RED,1.5);
 
-  // c label along hypotenuse midpoint, offset outward
-  const hm={x:(A.x+Bv.x)/2,y:(A.y+Bv.y)/2};
-  const perpLen=Math.hypot(px2,py2);
-  const outOff=18;
-  ctx.font=`600 ${clamp(11,15,scale*c*0.12)}px DM Mono`;
-  ctx.fillStyle=RED;ctx.textAlign='center';
-  ctx.fillText(`c = ${fmt(c)}`,hm.x+px2/perpLen*outOff,hm.y+py2/perpLen*outOff);
-}
+  // b label on left side of rectangle
+  ctx.fillStyle=BLUE;
+  ctx.save();ctx.translate(sqBx-14,(topY+botY)/2);ctx.rotate(-Math.PI/2);
+  ctx.font=`bold ${clamp(10,13,sb*0.1)}px DM Mono`;ctx.textAlign='center';
+  ctx.fillText('b',0,0);ctx.restore();
 
-function fillPoly(ctx,pts,fill,stroke,lw){
+  if(step<3) return;
+
+  // ── Step 3: diagonal of the a×b rectangle ──
+  ctx.strokeStyle=GREEN; ctx.lineWidth=3;
   ctx.beginPath();
-  pts.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
-  ctx.closePath();
-  ctx.fillStyle=fill;ctx.fill();
-  ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke();
+  ctx.moveTo(sqBx,botY);       // bottom-left of rectangle
+  ctx.lineTo(sqBx+sa,topY);    // top-right
+  ctx.stroke();
+
+  // Label diagonal
+  const dmx=sqBx+sa/2, dmy=(topY+botY)/2;
+  ctx.save();
+  ctx.translate(dmx,dmy);
+  ctx.rotate(Math.atan2(topY-botY,sa));
+  ctx.fillStyle=GREEN;
+  ctx.font=`bold ${clamp(10,14,sb*0.1)}px DM Mono`;
+  ctx.textAlign='center';
+  ctx.fillText(`c = ${fmt(c)}`,0,-9);
+  ctx.restore();
+
+  // Right-angle mark at bottom-left corner of rectangle
+  const rm=11;
+  ctx.strokeStyle=GREEN; ctx.lineWidth=1.5;
+  ctx.beginPath();
+  ctx.moveTo(sqBx+rm,botY); ctx.lineTo(sqBx+rm,botY-rm); ctx.lineTo(sqBx,botY-rm);
+  ctx.stroke();
 }
 
-function labelSquare(ctx,cx,cy,text,color,size){
-  const fs=clamp(10,20,size);
-  ctx.font=`bold ${fs}px Archivo Black,DM Mono,monospace`;
-  ctx.fillStyle=color;ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText(text,cx,cy);
-  ctx.textBaseline='alphabetic';
-}
+function drawSteps4to5(ctx,W,H,a,b,c){
+  // THE CORRECT PROOF DIAGRAM
+  // Outer square of side (a+b). Inside: 4 right triangles (legs a,b, hyp c)
+  // arranged at corners, leaving a tilted inner square of side c.
+  //
+  // Outer square corners (axis-aligned):
+  // TL=(0,0), TR=(a+b,0), BR=(a+b,a+b), BL=(0,a+b)  (in diagram units)
+  //
+  // Points on edges (mark 'a' from each corner going clockwise):
+  // Top edge: T1=(a,0)  (from TL, going right by a)
+  // Right edge: T2=(a+b,a)  (from TR, going down by a)
+  // Bottom edge: T3=(b,a+b)  (from BR, going left by a, so x=a+b-a=b)
+  // Left edge: T4=(0,b)  (from BL, going up by a)
+  //
+  // Inner tilted square vertices: T1,T2,T3,T4
+  // Each has side = √(a²+b²) = c ✓
+  //
+  // Triangles (right angle at each outer corner):
+  // Top-right: TR, T1, T2 (legs: T1→TR = b, TR→T2 = a) wait let me recalc
+  // TL to T1 = a (horizontal), T1 to T2... let me just compute.
 
-function clamp(lo,hi,v){return Math.max(lo,Math.min(hi,v));}
+  const PAD=28;
+  const side=a+b; // outer square side in units
+  const scale=Math.min((H-PAD*2)/side,(W-PAD*2)/side);
+  const S=side*scale;
+  const sa=a*scale, sb=b*scale;
 
-function updateEq(a,b,c){
-  const el=document.getElementById('eq-band');
-  if(!a||!b||!c||isNaN(c)){el.textContent='a² + b² = c²';return;}
-  el.innerHTML=`<span class="eq-a">${fmt(a*a)}</span><span class="eq-op">+</span><span class="eq-b">${fmt(b*b)}</span><span class="eq-op">=</span><span class="eq-c">${fmt(c*c)}</span>`;
-}
+  // Place outer square centred in canvas
+  const ox=(W-S)/2, oy=(H-S)/2;
 
-function updateWorking(a,b,c){
-  const el=document.getElementById('working');
-  if(!a||!b||!c||isNaN(c)){el.innerHTML='<div class="wk-line">Enter two sides above.</div>';return;}
-  let html='';
-  if(mode===0){
-    html=`<div class="wk-line">a² + b² = c²</div>
-      <div class="wk-line"><span class="hl-blue">${fmt(a)}</span>² + <span class="hl-green">${fmt(b)}</span>² = c²</div>
-      <div class="wk-line"><span class="hl-blue">${fmt(a*a)}</span> + <span class="hl-green">${fmt(b*b)}</span> = c²</div>
-      <div class="wk-line">c² = ${fmt(a*a+b*b)}</div>
-      <div class="wk-line result">c = √${fmt(a*a+b*b)} = <span class="hl-red">${fmt(c)}</span></div>`;
-  } else if(mode===1){
-    html=`<div class="wk-line">a² + b² = c²  →  b² = c² − a²</div>
-      <div class="wk-line">b² = <span class="hl-red">${fmt(c)}</span>² − <span class="hl-blue">${fmt(a)}</span>² = ${fmt(c*c)} − ${fmt(a*a)}</div>
-      <div class="wk-line">b² = ${fmt(c*c-a*a)}</div>
-      <div class="wk-line result">b = √${fmt(c*c-a*a)} = <span class="hl-green">${fmt(b)}</span></div>`;
-  } else {
-    html=`<div class="wk-line">a² + b² = c²  →  a² = c² − b²</div>
-      <div class="wk-line">a² = <span class="hl-red">${fmt(c)}</span>² − <span class="hl-green">${fmt(b)}</span>² = ${fmt(c*c)} − ${fmt(b*b)}</div>
-      <div class="wk-line">a² = ${fmt(c*c-b*b)}</div>
-      <div class="wk-line result">a = √${fmt(c*c-b*b)} = <span class="hl-blue">${fmt(a)}</span></div>`;
-  }
-  el.innerHTML=html;
-}
+  // Outer corners
+  const TL={x:ox,y:oy};
+  const TR={x:ox+S,y:oy};
+  const BR={x:ox+S,y:oy+S};
+  const BL={x:ox,y:oy+S};
 
-function gcd(a,b){return b===0?a:gcd(b,a%b);}
+  // Points on edges marking distance 'a' from each corner (clockwise)
+  // Top edge: from TL go right by a
+  const P1={x:ox+sa,y:oy};           // on top edge
+  // Right edge: from TR go down by a
+  const P2={x:ox+S,y:oy+sa};         // on right edge
+  // Bottom edge: from BR go left by a  (so x = ox+S-sa = ox+sb)
+  const P3={x:ox+sb,y:oy+S};         // on bottom edge
+  // Left edge: from BL go up by a  (so y = oy+S-sa = oy+sb)
+  const P4={x:ox,y:oy+sb};           // on left edge
 
-function updateTriple(a,b,c){
-  const el=document.getElementById('triple-band');
-  if(!a||!b||!c||isNaN(c)){el.innerHTML='';return;}
-  const ai=Math.round(a),bi=Math.round(b),ci=Math.round(c);
-  const isInt=Math.abs(a-ai)<0.002&&Math.abs(b-bi)<0.002&&Math.abs(c-ci)<0.002;
-  if(isInt&&ai*ai+bi*bi===ci*ci){
-    const g=gcd(gcd(ai,bi),ci);
-    const prim=g===1;
-    el.innerHTML=`<div class="triple-badge yes">✓ Pythagorean triple</div>
-      <div class="triple-detail">(${ai}, ${bi}, ${ci}) — all integers, a²+b²=c². ${prim?'This is a <strong>primitive</strong> triple — the three numbers share no common factor.':`Divide by ${g} → primitive triple (${ai/g}, ${bi/g}, ${ci/g}).`}</div>`;
-  } else if(isInt){
-    el.innerHTML=`<div class="triple-badge no">Not a triple</div>
-      <div class="triple-detail">(${ai}, ${bi}, ${ci}) — all integers, but ${ai}²+${bi}² = ${ai*ai+bi*bi}, not ${ci*ci}.</div>`;
-  } else {
-    el.innerHTML=`<div class="triple-badge almost" style="color:var(--rule)">Not a triple</div>
-      <div class="triple-detail">Sides are not all whole numbers. Pythagorean triples require all three sides to be integers.</div>`;
-  }
+  // ── Outer square ──
+  ctx.strokeStyle=CHALK3; ctx.lineWidth=1;
+  ctx.strokeRect(ox,oy,S,S);
 
-  // Highlight matching known triple button
-  document.querySelectorAll('.ts-btn').forEach(btn=>{
-    const ta=+btn.dataset.a,tb=+btn.dataset.b,tc=+btn.dataset.c||0;
-    const match=(Math.abs(a-ta)<0.01&&Math.abs(b-tb)<0.01)||(Math.abs(a-tb)<0.01&&Math.abs(b-ta)<0.01);
-    btn.classList.toggle('active',match);
+  // ── Four right triangles (colour-coded by which leg is a, which is b) ──
+  // Top-left triangle: TL, P1, P4
+  //   Leg from TL→P1 = a, Leg from TL→P4... wait P4 is on left edge at distance b from top
+  //   TL to P4: vertical distance = sb = b*scale (going down)
+  //   TL to P1: horizontal distance = sa = a*scale (going right)
+  //   So this triangle has legs a (horizontal) and b (vertical) — correct!
+  const triDefs=[
+    {pts:[TL,P1,P4],aLeg:[TL,P1],bLeg:[TL,P4],fill:BLUE_F,stroke:BLUE},
+    {pts:[TR,P2,P1],aLeg:[TR,P2],bLeg:[TR,P1],fill:RED_F,stroke:RED},
+    {pts:[BR,P3,P2],aLeg:[BR,P3],bLeg:[BR,P2],fill:BLUE_F,stroke:BLUE},
+    {pts:[BL,P4,P3],aLeg:[BL,P4],bLeg:[BL,P3],fill:RED_F,stroke:RED},
+  ];
+
+  triDefs.forEach(tri=>{
+    ctx.beginPath();
+    ctx.moveTo(tri.pts[0].x,tri.pts[0].y);
+    tri.pts.forEach(p=>ctx.lineTo(p.x,p.y));
+    ctx.closePath();
+    ctx.fillStyle=tri.fill; ctx.fill();
+    ctx.strokeStyle=tri.stroke; ctx.lineWidth=1.5; ctx.stroke();
   });
+
+  // ── Inner tilted square (c × c) ──
+  ctx.beginPath();
+  ctx.moveTo(P1.x,P1.y);ctx.lineTo(P2.x,P2.y);
+  ctx.lineTo(P3.x,P3.y);ctx.lineTo(P4.x,P4.y);ctx.closePath();
+  ctx.fillStyle=GREEN_F; ctx.fill();
+  ctx.strokeStyle=GREEN; ctx.lineWidth=2.5; ctx.stroke();
+
+  // ── Outer square outline on top ──
+  ctx.strokeStyle=CHALK3; ctx.lineWidth=1.5;
+  ctx.strokeRect(ox,oy,S,S);
+
+  // ── Right angle marks at outer corners ──
+  const rm=Math.min(9,sa*0.25,sb*0.25);
+  // TL corner: right angle between P1 direction (right) and P4 direction (down)
+  drawRA(ctx,TL.x,TL.y,TL.x+rm,TL.y,TL.x,TL.y+rm,CHALK3,rm);
+  drawRA(ctx,TR.x,TR.y,TR.x,TR.y+rm,TR.x-rm,TR.y,CHALK3,rm);
+  drawRA(ctx,BR.x,BR.y,BR.x-rm,BR.y,BR.x,BR.y-rm,CHALK3,rm);
+  drawRA(ctx,BL.x,BL.y,BL.x,BL.y-rm,BL.x+rm,BL.y,CHALK3,rm);
+
+  // ── Inner square centre ──
+  const icx=(P1.x+P2.x+P3.x+P4.x)/4;
+  const icy=(P1.y+P2.y+P3.y+P4.y)/4;
+  const innerR=Math.hypot(P1.x-icx,P1.y-icy)*0.5;
+
+  // ── Leg labels — top-left triangle only, labels placed OUTSIDE ──
+  const legFs=clamp(10,13,Math.min(sa,sb)*0.18);
+  ctx.fillStyle=BLUE; ctx.font=`bold ${legFs}px DM Mono`; ctx.textAlign='center';
+  ctx.fillText(`a=${a}`,TL.x+sa/2,TL.y-10);
+  ctx.save();ctx.translate(TL.x-16,TL.y+sb/2);ctx.rotate(-Math.PI/2);
+  ctx.fillStyle=BLUE; ctx.font=`bold ${legFs}px DM Mono`; ctx.textAlign='center';
+  ctx.fillText(`b=${b}`,0,0);ctx.restore();
+
+  // ── Inner square label: only c² on step 4, nothing on step 5 (equation goes below) ──
+  if(step===4 && innerR>18){
+    ctx.fillStyle=GREEN; ctx.font=`bold ${clamp(10,14,innerR*0.55)}px DM Mono`; ctx.textAlign='center';
+    ctx.fillText(`c²=${fmt(c*c)}`,icx,icy+5);
+  }
+
+  // ── Outer square bottom label ──
+  ctx.fillStyle=CHALK3; ctx.font=`bold ${clamp(9,12,S*0.055)}px DM Mono`; ctx.textAlign='center';
+  ctx.fillText(`(a+b) = ${a+b}`,ox+S/2,oy+S+20);
+
+  // ── Step 5: proof labels below diagram, not inside ──
+  if(step>=5){
+    // ½ab only in the two largest triangles (TL and BR)
+    const halfFs=clamp(9,12,Math.min(sa,sb)*0.2);
+    [{x:(TL.x+P1.x+P4.x)/3,y:(TL.y+P1.y+P4.y)/3},
+     {x:(BR.x+P3.x+P2.x)/3,y:(BR.y+P3.y+P2.y)/3}].forEach(tc=>{
+      ctx.fillStyle='rgba(240,236,227,.75)';
+      ctx.font=`600 ${halfFs}px DM Mono`; ctx.textAlign='center';
+      ctx.fillText('½ab',tc.x,tc.y+4);
+    });
+    // Equation below the diagram in a clear zone
+    const eqFs=clamp(10,13,W*0.018);
+    ctx.fillStyle=GREEN; ctx.font=`bold ${eqFs}px DM Mono`; ctx.textAlign='center';
+    ctx.fillText(`c² = a²+b² = ${fmt(a*a)}+${fmt(b*b)} = ${fmt(c*c)}`,W/2,oy+S+40);
+  }
 }
 
-// Mode switch
-document.querySelectorAll('.mode-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    mode=+btn.dataset.m;
-    document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
+function drawRA(ctx,ox,oy,ax,ay,bx,by,color,size){
+  const da={x:(ax-ox)/Math.hypot(ax-ox,ay-oy)*size,y:(ay-oy)/Math.hypot(ax-ox,ay-oy)*size};
+  const db={x:(bx-ox)/Math.hypot(bx-ox,by-oy)*size,y:(by-oy)/Math.hypot(bx-ox,by-oy)*size};
+  ctx.strokeStyle=color; ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(ox+da.x,oy+da.y);
+  ctx.lineTo(ox+da.x+db.x,oy+da.y+db.y);
+  ctx.lineTo(ox+db.x,oy+db.y);
+  ctx.stroke();
+}
 
-    const aEl=document.getElementById('inp-a');
-    const bEl=document.getElementById('inp-b');
-    const cEl=document.getElementById('inp-c');
+function dashLine(ctx,x1,y1,x2,y2,color,lw){
+  ctx.strokeStyle=color; ctx.lineWidth=lw;
+  ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+}
 
-    // Reset readOnly and computed styling
-    [aEl,bEl,cEl].forEach(el=>{el.readOnly=false;el.classList.remove('computed');});
+// ── MAIN RENDER ──────────────────────────────────────────────────────────────
+function renderAll(){
+  const c=Math.sqrt(a*a+b*b);
+  document.getElementById('a-disp').textContent=a;
+  document.getElementById('b-disp').textContent=b;
+  document.getElementById('a-sl').value=a;
+  document.getElementById('b-sl').value=b;
+  renderDots();
+  updateBanner();
+  updateAreas();
+  updateProofEq();
+  updateInsight();
+  draw();
+  document.getElementById('prev-btn').disabled=step<=1;
+  document.getElementById('next-btn').disabled=step>=MAX;
+  document.getElementById('next-btn').textContent=step>=MAX?'Done ✓':'Next →';
+}
 
-    if(mode===0){cEl.readOnly=true;cEl.classList.add('computed');aEl.value=3;bEl.value=4;cEl.value='';}
-    else if(mode===1){bEl.readOnly=true;bEl.classList.add('computed');aEl.value=8;bEl.value='';cEl.value=17;}
-    else{aEl.readOnly=true;aEl.classList.add('computed');aEl.value='';bEl.value=12;cEl.value=13;}
-    compute();
-  });
+// Controls
+document.getElementById('next-btn').addEventListener('click',()=>{if(step<MAX){step++;renderAll();}});
+document.getElementById('prev-btn').addEventListener('click',()=>{if(step>1){step--;renderAll();}});
+document.getElementById('reset-btn').addEventListener('click',()=>{step=1;renderAll();});
+
+document.getElementById('a-sl').addEventListener('input',e=>{
+  a=parseFloat(e.target.value);
+  if(a>=b){b=Math.min(9,parseFloat((a+0.5).toFixed(1)));document.getElementById('b-sl').value=b;}
+  step=1;renderAll();
+});
+document.getElementById('b-sl').addEventListener('input',e=>{
+  b=parseFloat(e.target.value);
+  if(b<=a){a=Math.max(0.5,parseFloat((b-0.5).toFixed(1)));document.getElementById('a-sl').value=a;}
+  step=1;renderAll();
 });
 
-// Known triples
-document.querySelectorAll('.ts-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    const a=+btn.dataset.a,b=+btn.dataset.b;
-    document.getElementById('inp-a').value=a;
-    document.getElementById('inp-b').value=b;
-    if(mode!==0){
-      document.querySelectorAll('.mode-btn')[0].click();
-      setTimeout(()=>{
-        document.getElementById('inp-a').value=a;
-        document.getElementById('inp-b').value=b;
-        compute();
-      },10);
-    } else compute();
-  });
-});
-
-['inp-a','inp-b','inp-c'].forEach(id=>document.getElementById(id).addEventListener('input',compute));
-window.addEventListener('resize',compute);
-compute();
+window.addEventListener('resize',()=>draw());
+renderAll();
 </script>
 </body>
 </html>
