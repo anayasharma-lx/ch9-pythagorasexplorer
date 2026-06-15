@@ -3,168 +3,176 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Baudhāyana's Construction — Ch. 9</title>
+<title>Baudhāyana's Construction — Grade 8</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Mono:wght@400;500;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,800;9..40,900&family=DM+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0f0d0b;--surface:#181512;--surface2:#201d18;
-  --chalk:#f0ece3;--chalk2:#b8b2a7;--chalk3:#716b62;--rule:#2a2520;
-  --blue:#6ba3d6;--blue-d:#3a78b0;
-  --red:#e07060;--red-d:#b84030;
-  --green:#5dbf8a;--green-d:#2e8a58;
-  --amber:#e8a840;
-  --display:'Playfair Display',Georgia,serif;
-  --mono:'DM Mono',monospace;--body:'DM Sans',sans-serif;
+  --bg1:#fddcb5;--bg2:#dff2e0;
+  --card:#fff;--border:#1a1a2e;
+  --ink:#1a1a2e;--ink2:#4a4a5a;--ink3:#9090a0;
+  --teal:#4ecdc4;--orange:#ff6b35;--yellow:#ffd93d;--red:#e63946;--purple:#a78bfa;--green:#2a9d8f;
+  --sans:'DM Sans',system-ui,sans-serif;--mono:'DM Mono',monospace;
 }
-html,body{background:var(--bg);color:var(--chalk)}
-body{font-family:var(--body);min-height:100vh;-webkit-font-smoothing:antialiased;padding:0}
+html{background:linear-gradient(135deg,var(--bg1) 0%,#fef6e8 50%,var(--bg2) 100%);min-height:100vh}
+body{font-family:var(--sans);color:var(--ink);min-height:100vh;padding:32px 24px;display:flex;flex-direction:column;align-items:center}
+
+/* PAGE CARD */
+.page-card{background:var(--card);border:2px solid var(--border);border-radius:24px;width:100%;max-width:960px;overflow:hidden}
 
 /* HEADER */
-.header{padding:22px 28px 18px;border-bottom:1px solid var(--rule)}
-.chap-tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--chalk3);margin-bottom:8px}
-.main-title{font-family:var(--display);font-size:clamp(26px,6vw,54px);font-weight:900;
-  line-height:.95;color:var(--chalk)}
-.main-title em{font-style:italic;color:var(--amber)}
-.subtitle{font-family:var(--mono);font-size:12px;color:var(--chalk3);margin-top:10px;
-  line-height:1.65;max-width:500px}
+.card-header{padding:28px 36px 22px}
+.activity-pill{display:inline-flex;align-items:center;gap:6px;background:var(--yellow);border:2px solid var(--border);border-radius:30px;padding:4px 14px;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
+.activity-pill::before{content:'★';font-size:10px}
+.page-title{font-size:clamp(24px,4vw,40px);font-weight:900;line-height:1.05;display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.t-pill{color:#fff;border:2px solid var(--border);border-radius:12px;padding:3px 16px;font-style:italic;font-size:inherit;display:inline-block}
+.page-desc{font-size:15px;color:var(--ink2);line-height:1.6;max-width:600px}
+.page-desc em{color:var(--red);font-style:italic;font-weight:700}
 
-/* AB CONTROLS */
-.ab-controls{padding:16px 28px;background:var(--surface);border-bottom:1px solid var(--rule);
-  display:grid;grid-template-columns:1fr 1fr;gap:16px}
-@media(max-width:480px){.ab-controls{grid-template-columns:1fr;gap:10px}}
-.ctrl-block .ctrl-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
-.ctrl-lbl{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--chalk3)}
-.ctrl-val{font-family:var(--display);font-size:30px;letter-spacing:.02em;line-height:1}
-.ctrl-val.blue{color:var(--blue)}
-.ctrl-val.red{color:var(--red)}
-input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:3px;
-  background:var(--rule);outline:none;cursor:pointer}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
-  width:20px;height:20px;border-radius:50%;background:var(--chalk);
-  border:3px solid var(--bg);box-shadow:0 0 0 1.5px var(--chalk3);cursor:pointer}
-input[type=range].blue-r::-webkit-slider-thumb{background:var(--blue)}
-input[type=range].red-r::-webkit-slider-thumb{background:var(--red)}
+/* BODY LAYOUTS */
+.two-col{display:grid;grid-template-columns:1fr 280px;border-top:1px dashed #d0d0d8}
+.two-col-wide{display:grid;grid-template-columns:1fr 320px;border-top:1px dashed #d0d0d8}
+.one-col{border-top:1px dashed #d0d0d8}
+.left-col{padding:24px 28px;border-right:1px dashed #d0d0d8;display:flex;flex-direction:column;gap:20px}
+.right-col{padding:20px 18px;display:flex;flex-direction:column;gap:14px}
+.full-col{padding:24px 28px;display:flex;flex-direction:column;gap:20px}
+
+/* SECTION LABELS */
+.sec{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.sec-dot{width:13px;height:13px;border-radius:50%;flex-shrink:0}
+.sec-title{font-size:14px;font-weight:800;color:var(--ink)}
+.sec-rule{flex:1;border:none;border-top:1px dashed #d8d8e0}
+
+/* INFO CARDS (right col) */
+.info-card{background:#fff;border:2px solid var(--border);border-radius:18px;padding:14px 16px}
+.info-card + .info-card{margin-top:0}
+
+/* CONTROLS — sliders */
+.ctrl-block{display:flex;flex-direction:column;gap:5px}
+.ctrl-head{display:flex;justify-content:space-between;align-items:baseline}
+.ctrl-lbl{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3)}
+.ctrl-val{font-family:var(--mono);font-size:24px;font-weight:700}
+input[type=range]{-webkit-appearance:none;width:100%;height:5px;border-radius:3px;background:#e8e8e8;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid var(--border)}
+
+/* TABS / SCENARIO BUTTONS */
+.tab-row{display:flex;gap:8px;flex-wrap:wrap;padding:16px 28px;border-bottom:1px dashed #d0d0d8;background:#fafafa}
+.tab-btn{padding:8px 18px;border:2px solid #d0d0d8;border-radius:30px;background:#fff;font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink2);cursor:pointer;transition:all .14s}
+.tab-btn:hover{border-color:var(--teal);color:var(--teal)}
+.tab-btn.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+.tab-btn.active-orange{background:var(--orange);color:#fff;border-color:var(--orange)}
 
 /* STEP NAV */
-.step-nav{padding:14px 28px;background:var(--surface2);border-bottom:1px solid var(--rule);
-  display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.nav-btn{padding:8px 18px;border:1px solid var(--chalk3);background:transparent;
-  font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.06em;
-  text-transform:uppercase;color:var(--chalk3);cursor:pointer;transition:all .15s}
-.nav-btn:hover:not(:disabled){border-color:var(--chalk);color:var(--chalk)}
-.nav-btn:disabled{opacity:.25;cursor:not-allowed}
-.nav-btn.primary{background:var(--chalk);color:var(--bg);border-color:var(--chalk)}
-.nav-btn.primary:hover:not(:disabled){opacity:.85}
-.step-dots{display:flex;gap:5px;align-items:center;flex:1;justify-content:center}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--chalk3);transition:all .2s}
-.dot.active{background:var(--amber);width:22px;border-radius:4px}
-.dot.done{background:var(--chalk3);opacity:.6}
-.reset-btn{margin-left:auto;padding:6px 14px;border:1px solid var(--rule);background:transparent;
-  font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--chalk3);cursor:pointer;transition:all .12s}
-.reset-btn:hover{border-color:var(--chalk3);color:var(--chalk)}
+.step-nav{display:flex;align-items:center;gap:12px;padding:14px 28px;border-bottom:1px dashed #d0d0d8;background:#fafafa}
+.step-btn{padding:8px 20px;border:2px solid var(--border);border-radius:30px;font-family:var(--sans);font-size:13px;font-weight:800;cursor:pointer;background:#fff;color:var(--ink2);transition:all .14s}
+.step-btn:hover:not(:disabled){background:#f5f5f5}
+.step-btn:disabled{opacity:.35;cursor:default}
+.step-btn.primary{background:var(--teal);color:#fff;border-color:var(--teal)}
+.step-btn.primary:hover{background:#3ab5ac}
+.step-dots{display:flex;gap:6px}
+.sdot{width:9px;height:9px;border-radius:50%;background:#d8d8e0;transition:all .15s}
+.sdot.done{background:var(--teal)}
+.sdot.cur{background:var(--teal);transform:scale(1.3)}
+.step-lbl{flex:1;font-size:14px;font-weight:700;color:var(--ink)}
 
 /* STEP BANNER */
-.step-banner{padding:16px 28px;border-bottom:1px solid var(--rule)}
-.sb-num{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--amber);margin-bottom:6px}
-.sb-text{font-size:14px;line-height:1.7;color:var(--chalk2)}
-.sb-text strong{color:var(--chalk)}
-.sb-text em{font-style:italic;color:var(--amber)}
+.step-banner{padding:14px 28px;background:#fffbe6;border-bottom:1px dashed #d0d0d8;display:flex;align-items:baseline;gap:10px}
+.step-num{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--orange);flex-shrink:0}
+.step-text{font-size:15px;font-weight:700;color:var(--ink);line-height:1.4}
 
-/* CANVAS */
-.canvas-wrap{background:var(--surface);border-bottom:1px solid var(--rule)}
-canvas{display:block;width:100%}
+/* CANVAS AREA */
+.canvas-wrap{background:#f8f8f8;border-radius:12px;overflow:hidden;position:relative;border:2px solid #e0e0e0}
+canvas{display:block;width:100%;height:auto}
 
-/* AREAS BAND */
-.areas-band{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--rule)}
-.area-cell{padding:16px 20px;border-right:1px solid var(--rule);
-  display:flex;flex-direction:column;gap:3px;transition:opacity .3s}
-.area-cell:last-child{border-right:none}
-.ac-lbl{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;
-  text-transform:uppercase}
-.ac-lbl.blue{color:var(--blue)}
-.ac-lbl.red{color:var(--red)}
-.ac-lbl.green{color:var(--green)}
-.ac-big{font-family:var(--display);font-size:clamp(24px,4vw,38px);line-height:1}
-.ac-big.blue{color:var(--blue)}
-.ac-big.red{color:var(--red)}
-.ac-big.green{color:var(--green)}
-.ac-sub{font-family:var(--mono);font-size:11px;color:var(--chalk3)}
-@media(max-width:480px){.areas-band{grid-template-columns:1fr}
-  .area-cell{border-right:none;border-bottom:1px solid var(--rule)}
-  .area-cell:last-child{border-bottom:none}}
+/* FACT / STATS ROWS */
+.fact-row{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;border-bottom:1px dashed #e8e8e8}
+.fact-row:last-child{border-bottom:none}
+.fact-lbl{font-size:13px;color:var(--ink2)}
+.fact-val{font-family:var(--mono);font-size:16px;font-weight:700}
 
-/* PROOF EQ */
-.proof-eq{padding:18px 28px;background:var(--surface2);border-bottom:1px solid var(--rule);
-  font-family:var(--display);font-size:clamp(16px,3.5vw,26px);
-  color:var(--chalk);text-align:center;letter-spacing:.04em;transition:opacity .3s}
-.proof-eq .blue{color:var(--blue)}
-.proof-eq .red{color:var(--red)}
-.proof-eq .green{color:var(--green)}
-.proof-eq .amber{color:var(--amber)}
-.proof-eq .op{color:var(--chalk3);margin:0 6px}
+/* TALLY BUTTONS */
+.tally{display:flex;align-items:center;gap:8px}
+.tally-btn{width:36px;height:36px;border:2px solid var(--border);border-radius:10px;background:#fff;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;color:var(--ink2)}
+.tally-btn:hover{background:var(--teal);color:#fff;border-color:var(--teal)}
+.tally-num{font-family:var(--mono);font-size:28px;font-weight:700;min-width:40px;text-align:center}
 
-/* INSIGHT */
-.insight-row{padding:18px 28px;display:grid;grid-template-columns:3px 1fr;gap:14px}
-.ins-bar{background:var(--amber)}
-.ins-text{font-size:13px;line-height:1.8;color:var(--chalk2)}
-.ins-text strong{color:var(--chalk)}
+/* VERDICT STRIP */
+.verdict-strip{padding:14px 28px;font-size:15px;font-weight:700;border-top:1px dashed #d0d0d8}
+.verdict-ok{background:#e8faf9;color:var(--green)}
+.verdict-fail{background:#fef0ee;color:#c0441e}
+
+/* INSIGHT STRIP */
+.insight-strip{padding:16px 28px;font-size:14px;color:var(--ink2);line-height:1.7;background:#fffbe6;border-top:1px dashed #d0d0d8}
+.insight-strip strong{color:var(--ink);font-weight:700}
+
+/* NUMBER CIRCLES */
+.num-circle{width:26px;height:26px;border-radius:50%;background:var(--yellow);border:2px solid var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+
+/* FLOATING SHAPES */
+.shape{position:fixed;pointer-events:none;z-index:-1}
+.sh-circle{width:56px;height:56px;border-radius:50%;background:#ff6b6b;opacity:.65;top:80px;left:calc(50% - 530px)}
+.sh-tri{width:0;height:0;border-left:22px solid transparent;border-right:22px solid transparent;border-bottom:38px solid #4ecdc4;opacity:.65;bottom:180px;right:calc(50% - 530px)}
+.sh-star{font-size:34px;line-height:1;opacity:.55;top:200px;right:calc(50% - 510px)}
+.sh-sq{width:36px;height:36px;border-radius:8px;background:#a78bfa;opacity:.55;bottom:90px;left:calc(50% - 510px);transform:rotate(15deg)}
+
+@media(max-width:740px){
+  body{padding:12px}
+  .two-col,.two-col-wide{grid-template-columns:1fr}
+  .left-col{border-right:none;border-bottom:1px dashed #d0d0d8}
+  .card-header,.full-col,.left-col,.right-col{padding-left:18px;padding-right:18px}
+  .tab-row,.step-nav,.step-banner,.verdict-strip,.insight-strip{padding-left:18px;padding-right:18px}
+}
+.canvas-wrap{background:#f8f8f8;border-radius:0} .canvas-wrap canvas{height:auto}
+.page-card{max-width:960px}
 </style>
 </head>
 <body>
-
-<div class="header">
-  <div class="chap-tag">Ch. 9 · Baudhāyana–Pythagoras Theorem</div>
-  <div class="main-title">Baudhāyana's<br><em>Construction</em></div>
-  <div class="subtitle">How do you make one square whose area equals the sum of two? Baudhāyana solved this around 800 BCE. Step through his proof.</div>
-</div>
-
-<div class="ab-controls">
-  <div class="ctrl-block">
-    <div class="ctrl-head">
-      <span class="ctrl-lbl">a — smaller side</span>
-      <span class="ctrl-val blue" id="a-disp">3</span>
-    </div>
-    <input type="range" class="blue-r" id="a-sl" min="1" max="6" step="0.5" value="3">
+<div class="shape sh-circle"></div>
+<div class="shape sh-tri"></div>
+<div class="shape sh-star">★</div>
+<div class="shape sh-sq"></div>
+<div class="page-card">
+  <div class="card-header">
+    <div class="activity-pill">Ch 9 · Pythagoras Theorem</div>
+    <div class="page-title">Baudhāyana's <span class='t-pill' style='background:var(--teal)'>Construction</span></div>
+    <p class="page-desc">How do you make one square whose area equals the sum of two? Baudhāyana solved this around <em>800 BCE</em>. Step through his proof.</p>
   </div>
-  <div class="ctrl-block">
-    <div class="ctrl-head">
-      <span class="ctrl-lbl">b — larger side</span>
-      <span class="ctrl-val red" id="b-disp">4</span>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;padding:20px 28px;border-top:1px dashed #d0d0d8;border-bottom:1px dashed #d0d0d8;background:#fafafa">
+    <div class="ctrl-block" style="padding-right:20px;border-right:1px dashed #d0d0d8">
+      <div class="ctrl-head"><span class="ctrl-lbl">a — smaller side</span><span class="ctrl-val" style="color:var(--teal)" id="a-disp">3</span></div>
+      <input type="range" id="a-sl" min="1" max="6" step="0.5" value="3" style="accent-color:var(--teal)">
     </div>
-    <input type="range" class="red-r" id="b-sl" min="2" max="9" step="0.5" value="4">
+    <div class="ctrl-block" style="padding-left:20px">
+      <div class="ctrl-head"><span class="ctrl-lbl">b — larger side</span><span class="ctrl-val" style="color:var(--orange)" id="b-disp">4</span></div>
+      <input type="range" id="b-sl" min="2" max="9" step="0.5" value="4" style="accent-color:var(--orange)">
+    </div>
   </div>
+  <div class="step-nav">
+    <button class="step-btn" id="prev-btn" disabled>← Prev</button>
+    <div class="step-dots" id="step-dots"></div>
+    <button class="step-btn primary" id="next-btn">Next →</button>
+    <button class="step-btn" id="reset-btn" style="margin-left:auto">Reset</button>
+  </div>
+  <div class="step-banner">
+    <span class="step-num" id="sb-num"></span>
+    <span class="step-text" id="sb-text"></span>
+  </div>
+  <div class="two-col-wide">
+    <div class="left-col" style="padding:0">
+      <div class="canvas-wrap"><canvas id="cvs"></canvas></div>
+    </div>
+    <div class="right-col" style="padding-top:20px">
+      <div id="areas-band"></div>
+      <div id="proof-eq" style="font-family:var(--mono);font-size:14px;color:var(--ink2);line-height:2;padding:12px;background:#f8f8f8;border-radius:10px;border:1.5px solid #e0e0e0"></div>
+    </div>
+  </div>
+  <div class="insight-strip" id="insight-row"></div>
+
 </div>
-
-<div class="step-nav">
-  <button class="nav-btn" id="prev-btn" disabled>← Prev</button>
-  <div class="step-dots" id="step-dots"></div>
-  <button class="nav-btn primary" id="next-btn">Next →</button>
-  <button class="reset-btn" id="reset-btn">Reset</button>
-</div>
-
-<div class="step-banner">
-  <div class="sb-num" id="sb-num"></div>
-  <div class="sb-text" id="sb-text"></div>
-</div>
-
-<div class="canvas-wrap">
-  <canvas id="cvs"></canvas>
-</div>
-
-<div class="areas-band" id="areas-band"></div>
-
-<div class="proof-eq" id="proof-eq"></div>
-
-<div class="insight-row" id="insight-row"></div>
-
 <script>
+
 let step=1, a=3, b=4;
 const MAX=5;
 const BLUE='#6ba3d6', RED='#e07060', GREEN='#5dbf8a', AMBER='#e8a840';
@@ -240,7 +248,7 @@ function updateProofEq(){
   if(step===4){
     el.innerHTML=`(a+b)² <span class="op">=</span> <span class="green">c²</span> <span class="op">+</span> 4 × ½ab`;
   } else {
-    el.innerHTML=`<span class="blue">${fmt(a*a)}</span><span class="op">+</span><span class="red">${fmt(b*b)}</span><span class="op">=</span><span class="green">${fmt(c*c)}</span> <span style="color:var(--chalk3);font-size:.75em;margin-left:8px">= c²  ✓</span>`;
+    el.innerHTML=`<span class="blue">${fmt(a*a)}</span><span class="op">+</span><span class="red">${fmt(b*b)}</span><span class="op">=</span><span class="green">${fmt(c*c)}</span> <span style="color:rgba(255,255,255,.5);font-size:.75em;margin-left:8px">= c²  ✓</span>`;
   }
 }
 
@@ -272,7 +280,7 @@ function draw(){
   cvs.style.width=W+'px'; cvs.style.height=H+'px';
   const ctx=cvs.getContext('2d');
   ctx.scale(PR,PR);
-  ctx.fillStyle='#181512'; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#1a1a2e'; ctx.fillRect(0,0,W,H);
 
   if(step<=3) drawSteps1to3(ctx,W,H,a,b,c);
   else drawSteps4to5(ctx,W,H,a,b,c);
@@ -492,7 +500,7 @@ function drawSteps4to5(ctx,W,H,a,b,c){
     const halfFs=clamp(9,12,Math.min(sa,sb)*0.2);
     [{x:(TL.x+P1.x+P4.x)/3,y:(TL.y+P1.y+P4.y)/3},
      {x:(BR.x+P3.x+P2.x)/3,y:(BR.y+P3.y+P2.y)/3}].forEach(tc=>{
-      ctx.fillStyle='rgba(240,236,227,.75)';
+      ctx.fillStyle='rgba(200,200,200,.5)';
       ctx.font=`600 ${halfFs}px DM Mono`; ctx.textAlign='center';
       ctx.fillText('½ab',tc.x,tc.y+4);
     });
@@ -555,6 +563,7 @@ document.getElementById('b-sl').addEventListener('input',e=>{
 
 window.addEventListener('resize',()=>draw());
 renderAll();
+
 </script>
 </body>
 </html>
